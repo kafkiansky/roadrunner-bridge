@@ -14,6 +14,7 @@ use Spiral\RoadRunner\Jobs\JobsInterface;
 use Spiral\RoadRunnerBridge\Console\Command\Cache;
 use Spiral\RoadRunnerBridge\Console\Command\GRPC;
 use Spiral\RoadRunnerBridge\Console\Command\Queue;
+use Spiral\RoadRunnerBridge\Console\Command\Services;
 use Spiral\RoadRunnerBridge\GRPC\LocatorInterface;
 use Spiral\Command\GRPC as DeprecatedGRPC;
 
@@ -45,6 +46,8 @@ final class CommandBootloader extends Bootloader
         if ($container->has(LocatorInterface::class)) {
             $this->configureGrpc($console);
         }
+
+        $this->configureServices($console);
     }
 
     private function configureJobs(ConsoleBootloader $console)
@@ -80,5 +83,12 @@ final class CommandBootloader extends Bootloader
             'console',
             new Set('commands', array_diff($commands, $filterCommands))
         );
+    }
+
+    private function configureServices(ConsoleBootloader $console)
+    {
+        $console->addCommand(Services\ListCommand::class);
+        $console->addCommand(Services\RestartCommand::class);
+        $console->addCommand(Services\TerminateCommand::class);
     }
 }
